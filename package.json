@@ -4,8 +4,9 @@
   "description": "Back-End FinTrax Apps",
   "main": "server.js",
   "scripts": {
-    "start": "node servaer.js",
-    "dev": "nodemon server.js"
+    "start": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "deploy": "NODE_ENV=production"
   },
   "author": "",
   "license": "ISC",

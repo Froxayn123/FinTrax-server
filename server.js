@@ -1,16 +1,15 @@
 //Initialize
-require("dotenv").config();
+require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const express = require("express");
 const app = express();
-const db = require("./configs/connect");
 
 //Configurations
+const { executeTable } = require("./configs");
 const routerAPI = require("./routes/index");
 const logger = require("./middlewares/logger");
 const handlingError = require("./middlewares/handlingError");
 const PORT = process.env.PORT;
-
-db;
+executeTable();
 
 //Router
 app.use(routerAPI);

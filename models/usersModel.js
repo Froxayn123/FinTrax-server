@@ -1,4 +1,5 @@
 const db = require("../configs/connect");
+const { logger } = require("../middlewares/logger");
 
 const usersTable = async () => {
   try {
@@ -18,7 +19,7 @@ const usersTable = async () => {
         deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL);`);
     }
   } catch (err) {
-    console.log(err);
+    logger(err);
   }
 };
 

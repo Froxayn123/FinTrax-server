@@ -6,7 +6,7 @@ const app = express();
 //Configurations
 const { executeTable } = require("./configs");
 const routerAPI = require("./routes/index");
-const logger = require("./middlewares/logger");
+const { logger } = require("./middlewares/logger");
 const handlingError = require("./middlewares/handlingError");
 const PORT = process.env.PORT;
 executeTable();

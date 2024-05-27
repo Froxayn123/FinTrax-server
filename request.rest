@@ -1,1 +1,30 @@
 GET http://localhost:8080/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiU2lsdmkgUHV0cmkiLCJlbWFpbCI6InNpbHZpQGdtYWlsLmNvbSIsImlhdCI6MTcxNjc5NzA2MiwiZXhwIjoxNzE2Nzk3MDc3fQ.xxr7n0oyazEgmneWLTslBD4KanmemLbNdmFLgUTawyA
+
+###
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "fullname":"Silvi Putri",
+    "username":"Silvi Putri",
+    "phoneNumber":"+6281234567892",
+    "email":"silvi@gmail.com",
+    "password":"silvi123",
+    "confPassword":"silvi123"
+}
+
+###
+POST http://localhost:8080/api/v1/login
+Content-Type: application/json
+
+{
+    "username" : "Silvi Putri",
+    "password" : "silvi123"
+}
+
+###
+GET http://localhost:8080/api/v1/token
+
+###
+DELETE http://localhost:8080/api/v1/logout

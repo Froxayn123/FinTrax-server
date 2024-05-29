@@ -1,5 +1,7 @@
+// TEST USERS TABLE
+
 GET http://localhost:8080/api/v1/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiU2lsdmkgUHV0cmkiLCJlbWFpbCI6InNpbHZpQGdtYWlsLmNvbSIsImlhdCI6MTcxNjc5NzA2MiwiZXhwIjoxNzE2Nzk3MDc3fQ.xxr7n0oyazEgmneWLTslBD4KanmemLbNdmFLgUTawyA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5YjBhMGIwOS0xZGEyLTExZWYtYTExNS1jMDE4MDMzZDM1ODAiLCJ1c2VybmFtZSI6IlNpbHZpIFB1dHJpIiwiZW1haWwiOiJ0aWdvazYyMTk4QGFkcmFpcy5jb20iLCJpYXQiOjE3MTY5NzcwMzQsImV4cCI6MTcxNjk3NzA1NH0.SOqdFuwZlMLE95TNX8DwO_E2YDZs0aQ_lxhJlZsqRxA
 
 ###
 POST http://localhost:8080/api/v1/users
@@ -9,7 +11,7 @@ Content-Type: application/json
     "fullname":"Silvi Putri",
     "username":"Silvi Putri",
     "phoneNumber":"+6281234567892",
-    "email":"silvi@gmail.com",
+    "email":"silvi123@gmail.com",
     "password":"silvi123",
     "confPassword":"silvi123"
 }
@@ -19,7 +21,7 @@ POST http://localhost:8080/api/v1/login
 Content-Type: application/json
 
 {
-    "username" : "Silvi Putri",
+    "email" : "silvi123@gmail.com",
     "password" : "silvi123"
 }
 
@@ -28,3 +30,8 @@ GET http://localhost:8080/api/v1/token
 
 ###
 DELETE http://localhost:8080/api/v1/logout
+
+
+// TEST TRANSACTION TABLE
+###
+GET http://localhost:8080/api/v1/transaction

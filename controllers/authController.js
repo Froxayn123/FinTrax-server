@@ -24,11 +24,6 @@ const register = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-    res.status(500).json({
-      payload: {
-        message: "Something Went Wrong!",
-      },
-    });
   }
 };
 
@@ -52,17 +47,13 @@ const confirmEmail = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-    return res.status(500).json({
-      payload: {
-        message: "Something Went Wrong!",
-      },
-    });
   }
 };
 
 const login = async (req, res, next) => {
   try {
     const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
+    if (!user) return res.status(404).json({ message: "Email is not found" });
     const match = await bcrypt.compare(req.body.password, user[0].password);
     if (!match) return res.status(400).json({ message: "Wrong Password" });
     const userId = user[0].id;
@@ -83,7 +74,6 @@ const login = async (req, res, next) => {
     res.json({ accessToken });
   } catch (error) {
     next(error);
-    res.status(404).json({ message: "Email is not found" });
   }
 };
 
@@ -99,7 +89,6 @@ const logout = async (req, res, next) => {
     return res.sendStatus(200).json({ message: "You have been logged out" });
   } catch (error) {
     next(error);
-    res.status(404).json({ message: "You have been failed to logged out" });
   }
 };
 

@@ -35,3 +35,19 @@ DELETE http://localhost:8080/api/v1/logout
 // TEST TRANSACTION TABLE
 ###
 GET http://localhost:8080/api/v1/transaction
+Content-Type: application/json
+
+{
+    "userId" : "2462aba8-1e31-11ef-b5ba-c018033d3580"
+}
+
+###
+POST http://localhost:8080/api/v1/transaction
+Content-Type: application/json
+
+{
+    "userId" : "2462aba8-1e31-11ef-b5ba-c018033d3580",
+    "type" : "expenses",
+    "amount": 1500000.00,
+    "detail":"Makan Kentang"
+}

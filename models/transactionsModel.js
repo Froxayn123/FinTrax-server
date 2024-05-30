@@ -8,10 +8,10 @@ const transactionsTable = async () => {
         user_id VARCHAR(36) NOT NULL,
         type ENUM("income","expenses") NOT NULL,
         amount DECIMAL(15,2),
-        name_detail VARCHAR(100) NOT NULL,
+        detail TEXT,
         created_at TIMESTAMP NOT NULL,
         updated_at TIMESTAMP NOT NULL,
-        FOREIGN KEY(user_id) REFERENCES users(id)
+        CONSTRAINT FK_userTransaction FOREIGN KEY(user_id) REFERENCES users(id)
       );`);
     }
   } catch (err) {

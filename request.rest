@@ -1,7 +1,7 @@
 // TEST USERS TABLE
 
 GET http://localhost:8080/api/v1/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5YjBhMGIwOS0xZGEyLTExZWYtYTExNS1jMDE4MDMzZDM1ODAiLCJ1c2VybmFtZSI6IlNpbHZpIFB1dHJpIiwiZW1haWwiOiJ0aWdvazYyMTk4QGFkcmFpcy5jb20iLCJpYXQiOjE3MTY5NzcwMzQsImV4cCI6MTcxNjk3NzA1NH0.SOqdFuwZlMLE95TNX8DwO_E2YDZs0aQ_lxhJlZsqRxA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MmRlOGU3MS0xZWZkLTExZWYtYmJmZS1jMDE4MDMzZDM1ODAiLCJ1c2VybmFtZSI6IlNpbHZpIFB1dHJpIiwiZW1haWwiOiJzaWx2aTEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MTcxMjYxMjQsImV4cCI6MTcxNzEyNjE0NH0.7jT_2Opf-UiXAMMoA9TNccDofyoxOnG8QpSvqeYrl7U
 
 ###
 POST http://localhost:8080/api/v1/users
@@ -23,6 +23,15 @@ Content-Type: application/json
 {
     "email" : "silvi123@gmail.com",
     "password" : "silvi123"
+}
+
+###
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "id": "b77018d7-1e58-11ef-b5ba-c018033d3580",
+    "userName" : "silvi123"
 }
 
 ###
@@ -51,3 +60,5 @@ Content-Type: application/json
     "amount": 1500000.00,
     "detail":"Makan Kentang"
 }
+
+

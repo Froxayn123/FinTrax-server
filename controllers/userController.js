@@ -10,13 +10,18 @@ const getUser = async (req, res, next) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      payload: {
-        message: "Something Went Wrong!",
-      },
-    });
     next(error);
   }
 };
 
-module.exports = { getUser };
+const editUser = async (req, res, next) => {
+  try {
+    const { avatar, username } = req.body;
+    await db.query(`UPDATE users SET username = '${username}', avatar = '${avatar}', updated_at = CURRENT_TIMESTAMP()`);
+    res.status(200).json({ message: "Your profile has been updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUser, editUser };

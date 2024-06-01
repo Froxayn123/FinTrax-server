@@ -11,11 +11,7 @@ const register = async (req, res, next) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     const token = random(500);
-    await db.query(
-      `INSERT INTO users(id, fullname, email, password, phone_number, username, refresh_token, created_at, updated_at) VALUES (UUID(), '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
-    );
-
-    const link = `${process.env.BASE_URL}/users/confirm/${token}`;
+    const link = `${process.env.BASE_URL}/users/confirm/${token}/${username}/${phoneNumber}/${hashPassword}/${fullname}/${email}`;
     await sendEmail(email, "Verify Your Email Address for FinTrax", link, fullname);
     res.status(201).json({
       payload: {
@@ -29,17 +25,12 @@ const register = async (req, res, next) => {
 
 const confirmEmail = async (req, res, next) => {
   try {
-    const token = req.params.token;
-    const [checkuser] = await db.query(`SELECT * FROM users WHERE refresh_token = '${token}'`);
-    if (!checkuser) return res.status(404).send({ message: "User tidak ada" });
-    if (checkuser.email_verified_at) return res.status(400).json({ message: "Email has been verified" });
-    const userId = checkuser[0].id;
-    const username = checkuser[0].username;
-    const email = checkuser[0].email;
-    await db.query(`UPDATE users SET email_verified_at = CURRENT_TIMESTAMP() WHERE id = '${userId}';`);
-    jwt.sign({ userId, username, email }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "20s",
-    });
+    const { token, user, phone, hash, full, ema } = req.params;
+    const [checkuser] = await db.query(`SELECT * FROM users WHERE refresh_token = '${token}';`);
+    if (checkuser) return res.status(400).json({ message: "Email is already verified" });
+    await db.query(
+      `INSERT INTO users(id, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), '${full}', '${ema}', '${hash}', '${phone}', '${user}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
+    );
     return res.status(200).json({
       payload: {
         message: "Email has been successfully verified",
@@ -53,7 +44,6 @@ const confirmEmail = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
-    if (!user) return res.status(404).json({ message: "Email is not found" });
     const match = await bcrypt.compare(req.body.password, user[0].password);
     if (!match) return res.status(400).json({ message: "Wrong Password" });
     const userId = user[0].id;
@@ -73,6 +63,7 @@ const login = async (req, res, next) => {
     });
     res.json({ accessToken });
   } catch (error) {
+    res.status(404).json({ payload: { message: "Email is not found" } });
     next(error);
   }
 };

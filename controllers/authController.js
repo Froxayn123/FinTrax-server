@@ -11,7 +11,7 @@ const register = async (req, res, next) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     const token = random(500);
-    const link = `${process.env.BASE_URL}/users/confirm/${token}/${username}/${phoneNumber}/${hashPassword}/${fullname}/${email}`;
+    const link = `${process.env.BASE_URL}/register/confirm/${token}/${username}/${phoneNumber}/${hashPassword}/${email}/${fullname}`;
     await sendEmail(email, "Verify Your Email Address for FinTrax", link, fullname);
     res.status(201).json({
       payload: {
@@ -25,9 +25,9 @@ const register = async (req, res, next) => {
 
 const confirmEmail = async (req, res, next) => {
   try {
-    const { token, user, phone, hash, full, ema } = req.params;
+    const { token, user, phone, hash, ema, full } = req.params;
     const [checkuser] = await db.query(`SELECT * FROM users WHERE refresh_token = '${token}';`);
-    if (checkuser) return res.status(400).json({ message: "Email is already verified" });
+    if (!checkuser) return res.status(400).json({ message: "Email is already verified" });
     await db.query(
       `INSERT INTO users(id, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), '${full}', '${ema}', '${hash}', '${phone}', '${user}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
     );

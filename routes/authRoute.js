@@ -3,10 +3,10 @@ const { login, logout, register, confirmEmail } = require("../controllers/authCo
 const { refreshToken } = require("../controllers/refreshToken");
 const router = express();
 
-router.post("/users", register);
+router.post("/register", register);
 router.post("/login", login);
 router.get("/token", refreshToken);
 router.delete("/logout", logout);
-router.get("/users/confirm/:token/:user/:phone/:hash/:full/:ema", confirmEmail);
+router.get("/register/confirm/:token/:user/:phone/:hash/:ema/:full", confirmEmail);
 
 module.exports = router;

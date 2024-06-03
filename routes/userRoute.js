@@ -6,6 +6,6 @@ const router = express();
 
 router.get("/users", verifyToken, getUser);
 router.get("/token", refreshToken);
-router.post("/users/profile", verifyToken, editUser);
+router.put("/users/profile", verifyToken, editUser);
 
 module.exports = router;

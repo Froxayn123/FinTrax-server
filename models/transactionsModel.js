@@ -4,8 +4,8 @@ const transactionsTable = async () => {
     const [checkTable] = await db.query("SHOW TABLES LIKE 'transactions'");
     if (checkTable.length === 0) {
       await db.query(`CREATE TABLE transactions(
-        id VARCHAR(36) PRIMARY KEY NOT NULL,
-        user_id VARCHAR(36) NOT NULL,
+        id VARCHAR(255) PRIMARY KEY NOT NULL,
+        user_id VARCHAR(255) NOT NULL,
         type ENUM("income","expenses") NOT NULL,
         amount DECIMAL(15,2),
         detail TEXT,

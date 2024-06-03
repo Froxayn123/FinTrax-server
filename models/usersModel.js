@@ -4,7 +4,7 @@ const usersTable = async () => {
     const [checkTable] = await db.query("SHOW TABLES LIKE 'users'");
     if (checkTable.length === 0) {
       await db.query(`CREATE TABLE users(
-        id VARCHAR(36) PRIMARY KEY UNIQUE NOT NULL,
+        id VARCHAR(255) PRIMARY KEY UNIQUE NOT NULL,
         fullname CHAR(100) NOT NULL,
         username VARCHAR(100) NOT NULL,
         phone_number VARCHAR(100) NOT NULL,

@@ -77,7 +77,7 @@ const logout = async (req, res, next) => {
     const userId = user[0].id;
     await db.query(`UPDATE users SET refresh_token = null WHERE id = '${userId}';`);
     res.clearCookie("refreshToken");
-    return res.sendStatus(200).json({ message: "You have been logged out" });
+    return res.sendStatus(200).json({ payload: { message: "You have been logged out" } });
   } catch (error) {
     next(error);
   }

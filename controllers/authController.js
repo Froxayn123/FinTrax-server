@@ -2,7 +2,6 @@ const db = require("../configs/connect");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendEmail } = require("../email/sendEmail");
-const { random } = require("../middlewares/randomStrings");
 
 const register = async (req, res, next) => {
   try {
@@ -10,8 +9,7 @@ const register = async (req, res, next) => {
     if (password !== confPassword) return res.status(400).json({ message: "Password and Confirm Paswword doesn't match" });
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
-    const token = random(500);
-    const authToken = jwt.sign({ token, fullname, username, phoneNumber, email, hashPassword }, process.env.AUTH_TOKEN_SECRET, {
+    const authToken = jwt.sign({ fullname, username, phoneNumber, email, hashPassword }, process.env.AUTH_TOKEN_SECRET, {
       expiresIn: "2m",
     });
     const link = `${process.env.BASE_URL}/register/confirm/${authToken}`;
@@ -40,7 +38,7 @@ const confirmEmail = async (req, res, next) => {
 
     const fullname = req.fullname;
     const username = req.username;
-    const phoneNumber = req.fullNumber;
+    const phoneNumber = req.phoneNumber;
     const email = req.email;
     const hashPassword = req.hashPassword;
     const [checkuser] = await db.query(`SELECT * FROM users WHERE email = '${email}';`);

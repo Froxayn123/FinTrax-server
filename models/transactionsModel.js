@@ -11,7 +11,7 @@ const transactionsTable = async () => {
         detail TEXT,
         created_at TIMESTAMP NOT NULL,
         updated_at TIMESTAMP NOT NULL,
-        CONSTRAINT FK_userTransaction FOREIGN KEY(user_id) REFERENCES users(id)
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       );`);
     }
   } catch (err) {

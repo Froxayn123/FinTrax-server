@@ -10,7 +10,7 @@ const avatarTable = async () => {
         url VARCHAR(255) NOT NULL,
         created_at TIMESTAMP NOT NULL,
         updated_at TIMESTAMP NOT NULL,
-        CONSTRAINT FK_userAvatar FOREIGN KEY(user_id) REFERENCES users(id)
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       );`);
     }
   } catch (err) {

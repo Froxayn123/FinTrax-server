@@ -54,9 +54,12 @@ const deleteAccount = async (req, res, next) => {
   try {
     const userId = req.userId;
     if (!userId) return res.sendStatus(401);
-    const [checkuser] = await db.query(`SELECT * FROM users WHERE id = '${userId}';`);
+    const [checkuser] = await db.query(`SELECT users.*, avatars.filename  FROM users LEFT JOIN avatars ON users.id = avatars.user_id WHERE users.id = '${userId}';
+    `);
     if (checkuser.length === 0) return res.sendStatus(404);
     if (req.body.confirm !== "DELETE") return res.status(400).json({ message: "Wrong Confirm" });
+    const filepath = `./public/images/${checkuser[0].filename}`;
+    fs.unlinkSync(filepath);
     await db.query(`DELETE FROM users WHERE id = '${userId}'`);
     res.clearCookie("refreshToken");
     return res.status(200).json({ payload: { message: "You have successfully deleted your account" } });

@@ -36,13 +36,13 @@ const changePhoto = async (req, res, next) => {
     const [avatar] = await db.query(`SELECT * FROM avatars WHERE user_id = '${userId}';`);
     if (avatar.length == 0) {
       const pathAvatar = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
-      await db.query(`INSERT INTO avatars(id, user_id, filename, url, created_at, updated_at) VALUES (UUID(), '${userId}', '${req.file.filename}', '${pathAvatar}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
+      await db.query(`INSERT INTO avatars(id, user_id, filename, avatar_url, created_at, updated_at) VALUES (UUID(), '${userId}', '${req.file.filename}', '${pathAvatar}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
       return res.status(201).json({ message: "Your Photo has been changed" });
     }
     const filepath = `./public/images/${avatar[0].filename}`;
     fs.unlinkSync(filepath);
     const pathAvatar = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
-    await db.query(`UPDATE avatars SET filename = '${req.file.filename}', url = '${pathAvatar}', updated_at = CURRENT_TIMESTAMP() WHERE user_id = '${userId}';`);
+    await db.query(`UPDATE avatars SET filename = '${req.file.filename}', avatar_url = '${pathAvatar}', updated_at = CURRENT_TIMESTAMP() WHERE user_id = '${userId}';`);
 
     return res.status(200).json({ message: "Your Photo has been changed" });
   } catch (error) {

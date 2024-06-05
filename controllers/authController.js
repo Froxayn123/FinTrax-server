@@ -11,7 +11,10 @@ const register = async (req, res, next) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     const token = random(500);
-    const link = `${process.env.BASE_URL}/register/confirm/${token}/${username}/${phoneNumber}/${hashPassword}/${email}/${fullname}`;
+    const authToken = jwt.sign({ token, fullname, username, phoneNumber, email, hashPassword }, process.env.AUTH_TOKEN_SECRET, {
+      expiresIn: "2m",
+    });
+    const link = `${process.env.BASE_URL}/register/confirm/${authToken}`;
     await sendEmail(email, "Verify Your Email Address for FinTrax", link, fullname);
     res.status(201).json({
       payload: {
@@ -25,12 +28,27 @@ const register = async (req, res, next) => {
 
 const confirmEmail = async (req, res, next) => {
   try {
-    const { token, user, phone, hash, ema, full } = req.params;
-    const [checkuser] = await db.query(`SELECT * FROM users WHERE email = '${ema}';`);
+    const { token } = req.params;
+    jwt.verify(token, process.env.AUTH_TOKEN_SECRET, (err, decoded) => {
+      if (err) return res.sendStatus(403);
+      req.fullname = decoded.fullname;
+      req.username = decoded.username;
+      req.phoneNumber = decoded.phoneNumber;
+      req.email = decoded.email;
+      req.hashPassword = decoded.hashPassword;
+    });
+
+    const fullname = req.fullname;
+    const username = req.username;
+    const phoneNumber = req.fullNumber;
+    const email = req.email;
+    const hashPassword = req.hashPassword;
+    const [checkuser] = await db.query(`SELECT * FROM users WHERE email = '${email}';`);
     if (checkuser.length !== 0) return res.status(400).json({ message: "Email is already verified" });
     await db.query(
-      `INSERT INTO users(id, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), '${full}', '${ema}', '${hash}', '${phone}', '${user}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
+      `INSERT INTO users(id, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
     );
+
     return res.status(200).json({
       payload: {
         message: "Email has been successfully verified",

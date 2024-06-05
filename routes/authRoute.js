@@ -7,6 +7,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/token", refreshToken);
 router.delete("/logout", logout);
-router.get("/register/confirm/:token/:user/:phone/:hash/:ema/:full", confirmEmail);
+router.get("/register/confirm/:token", confirmEmail);
 
 module.exports = router;

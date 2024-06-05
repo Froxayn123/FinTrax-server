@@ -63,12 +63,13 @@ const login = async (req, res, next) => {
     const match = await bcrypt.compare(req.body.password, user[0].password);
     if (!match) return res.status(400).json({ message: "Wrong Password" });
     const userId = user[0].id;
+    const fullname = user[0].fullname;
     const username = user[0].username;
     const email = user[0].email;
-    const accessToken = jwt.sign({ userId, username, email }, process.env.ACCESS_TOKEN_SECRET, {
+    const accessToken = jwt.sign({ userId, fullname, username, email }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "1h",
     });
-    const refreshToken = jwt.sign({ userId, username, email }, process.env.REFRESH_TOKEN_SECRET, {
+    const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",
     });
     await db.query(`UPDATE users SET refresh_token = '${refreshToken}' WHERE id = '${userId}'`);

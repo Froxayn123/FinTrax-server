@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const [type, subtype] = file.mimetype.split("/");
-    const filename = new Date().getTime().toString() + "-" + req.username + `.${subtype}`;
+    const filename = new Date().getTime().toString() + "-" + req.fullname + `.${subtype}`;
     cb(null, filename);
   },
 });

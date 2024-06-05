@@ -5,7 +5,7 @@ const getUser = async (req, res, next) => {
   try {
     const userId = req.userId;
     if (!userId) return res.sendStatus(403);
-    const [results] = await db.query(`SELECT users.username, avatars.avatar_url, users.balance FROM users LEFT JOIN avatars ON users.id = avatars.user_id WHERE users.id = '${userId}';`);
+    const [results] = await db.query(`SELECT users.fullname, users.username, avatars.avatar_url, users.balance FROM users LEFT JOIN avatars ON users.id = avatars.user_id WHERE users.id = '${userId}';`);
     res.status(200).json({
       payload: {
         message: "User data has been successfully fetched",

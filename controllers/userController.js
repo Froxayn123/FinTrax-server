@@ -5,7 +5,7 @@ const getUser = async (req, res, next) => {
   try {
     const userId = req.userId;
     if (!userId) return res.sendStatus(403);
-    const [results] = await db.query(`SELECT users.id, avatars.url, balance FROM users INNER JOIN avatars ON users.id = avatars.user_id;`);
+    const [results] = await db.query(`SELECT users.username, avatars.url, users.balance FROM users INNER JOIN avatars ON users.id = avatars.user_id WHERE users.id = '${userId}';`);
     res.status(200).json({
       payload: {
         message: "User data has been successfully fetched",
@@ -50,4 +50,19 @@ const changePhoto = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, editUser, changePhoto };
+const deleteAccount = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    if (!userId) return res.sendStatus(401);
+    const [checkuser] = await db.query(`SELECT * FROM users WHERE id = '${userId}';`);
+    if (checkuser.length === 0) return res.sendStatus(404);
+    if (req.body.confirm !== "DELETE") return res.status(400).json({ message: "Wrong Confirm" });
+    await db.query(`DELETE FROM users WHERE id = '${userId}'`);
+    res.clearCookie("refreshToken");
+    return res.status(200).json({ payload: { message: "You have successfully deleted your account" } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUser, editUser, changePhoto, deleteAccount };

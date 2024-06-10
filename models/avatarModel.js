@@ -8,8 +8,8 @@ const avatarTable = async () => {
         user_id VARCHAR(255) NOT NULL,
         filename VARCHAR(255) NOT NULL,
         avatar_url VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       );`);
     }

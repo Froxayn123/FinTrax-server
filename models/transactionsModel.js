@@ -10,8 +10,8 @@ const transactionsTable = async () => {
         type ENUM("income","expenses") NOT NULL,
         amount DECIMAL(15,2),
         detail TEXT,
-        created_at TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY(category_name) REFERENCES categories(name) ON DELETE CASCADE
       );`);

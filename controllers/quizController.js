@@ -17,21 +17,21 @@ const submitQuiz = async (req, res, next) => {
     const totalValueUserAnswer = valueAnswerDB.map((item) => item.value).reduce((acc, curr) => acc + curr, 0);
 
     if (totalValueUserAnswer >= 30) {
-      await db.query(`INSERT INTO user_habits(id, user_id, habit_recommendation_id, created_at, updated_at) VALUES(UUID(), '${userId}', 'f8a26d96-278e-11ef-b0ec-c018033d3580', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
+      await db.query(`INSERT INTO user_habits(id, user_id, habit_name, created_at, updated_at) VALUES(UUID(), '${userId}', 'Hemat', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
       return res.status(200).json({
         payload: { message: "Your answers has been successfully saved" },
       });
     }
 
     if (totalValueUserAnswer > 15 && totalValueUserAnswer < 30) {
-      await db.query(`INSERT INTO user_habits(id, user_id, habit_recommendation_id, created_at, updated_at) VALUES(UUID(), '${userId}', 'f8a37d8b-278e-11ef-b0ec-c018033d3580', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
+      await db.query(`INSERT INTO user_habits(id, user_id, habit_name, created_at, updated_at) VALUES(UUID(), '${userId}', 'Sedang', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
       return res.status(200).json({
         payload: { message: "Your answers has been successfully saved" },
       });
     }
 
     if (totalValueUserAnswer <= 15) {
-      await db.query(`INSERT INTO user_habits(id, user_id, habit_recommendation_id, created_at, updated_at) VALUES(UUID(), '${userId}', 'f8a3b630-278e-11ef-b0ec-c018033d3580', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
+      await db.query(`INSERT INTO user_habits(id, user_id, habit_name, created_at, updated_at) VALUES(UUID(), '${userId}', 'Boros', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`);
       return res.status(200).json({
         payload: { message: "Your answers has been successfully saved" },
       });

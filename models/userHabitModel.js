@@ -6,11 +6,11 @@ const userHabitTable = async () => {
       await db.query(`CREATE TABLE user_habits(
         id VARCHAR(255) PRIMARY KEY UNIQUE NOT NULL,
         user_id VARCHAR(255) NOT NULL,
-        habit_recommendation_id VARCHAR(255) NOT NULL,
+        habit_name VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY(habit_recommendation_id) REFERENCES habit_recommendations(id) ON DELETE CASCADE);`);
+        FOREIGN KEY(habit_name) REFERENCES habit_recommendations(name) ON DELETE CASCADE);`);
     }
   } catch (err) {
     console.log(err);

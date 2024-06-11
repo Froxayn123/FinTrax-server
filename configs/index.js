@@ -3,8 +3,9 @@ const { avatarTable } = require("../models/avatarModel");
 const { categoryTable, categoryData } = require("../models/categoryModel");
 const { transactionsTable } = require("../models/transactionsModel");
 const { usersTable } = require("../models/usersModel");
-const { answersTable } = require("../models/answerModel");
-const { habitRecTable } = require("../models/habitRecommendationModel");
+const { answersTable, answerData } = require("../models/answerModel");
+const { habitRecTable, habitRecData } = require("../models/habitRecommendationModel");
+const { userHabitTable } = require("../models/userHabitModel");
 
 const executeTable = async () => {
   try {
@@ -16,7 +17,10 @@ const executeTable = async () => {
     await quizTable();
     await quizData();
     await answersTable();
+    await answerData();
     await habitRecTable();
+    await habitRecData();
+    await userHabitTable();
   } catch (err) {
     console.log("Execute Table Failed" + err);
   }

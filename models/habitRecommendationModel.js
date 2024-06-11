@@ -17,4 +17,24 @@ const habitRecTable = async () => {
   }
 };
 
-module.exports = { habitRecTable };
+const habitRecData = async () => {
+  try {
+    const [checkData] = await db.query("SELECT * FROM habit_recommendations");
+    if (checkData.length === 0) {
+      const habits = [
+        { name: "Hemat", savingsPercentage: 50, wantsPercentage: 30, needsPercentage: 20 },
+        { name: "Sedang", savingsPercentage: 60, wantsPercentage: 25, needsPercentage: 10 },
+        { name: "Boros", savingsPercentage: 70, wantsPercentage: 20, needsPercentage: 10 },
+      ];
+      for (let i = 0; i <= habits.length; i++) {
+        await db.query(
+          `INSERT INTO habit_recommendations(id, name, savings_percentage, wants_percentage, needs_percentage, created_at, updated_at) VALUES (UUID(), '${habits[i].name}', ${habits[i].savingsPercentage}, ${habits[i].wantsPercentage}, ${habits[i].needsPercentage}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
+        );
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { habitRecTable, habitRecData };

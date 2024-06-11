@@ -4,9 +4,9 @@ const quizTable = async () => {
     const [checkTable] = await db.query("SHOW TABLES LIKE 'quizzes'");
     if (checkTable.length === 0) {
       await db.query(`CREATE TABLE quizzes(
-        id VARCHAR(255) PRIMARY KEY UNIQUE NOT NULL,
+        id VARCHAR(255) NOT NULL,
         number INT(100) NOT NULL,
-        question VARCHAR(255) NOT NULL,
+        question VARCHAR(255) PRIMARY KEY UNIQUE NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
       );`);

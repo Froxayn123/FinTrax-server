@@ -28,7 +28,7 @@ const confirmEmail = async (req, res, next) => {
   try {
     const { token } = req.params;
     jwt.verify(token, process.env.AUTH_TOKEN_SECRET, (err, decoded) => {
-      if (err) return res.sendStatus(403);
+      if (err) return res.status(403).json({ message: "Error", err });
       req.fullname = decoded.fullname;
       req.username = decoded.username;
       req.phoneNumber = decoded.phoneNumber;

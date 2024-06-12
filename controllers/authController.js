@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendEmail } = require("../email/sendEmail");
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
   try {
     const { fullname, username, phoneNumber, email, password, confPassword } = req.body;
     if (password !== confPassword) return res.status(400).json({ message: "Password and Confirm Paswword doesn't match" });
@@ -19,12 +19,10 @@ const register = async (req, res, next) => {
         message: "Email Verification link sent to your email",
       },
     });
-  } catch (error) {
-    next(error);
-  }
+  } catch (error) {}
 };
 
-const confirmEmail = async (req, res, next) => {
+const confirmEmail = async (req, res) => {
   try {
     const { token } = req.params;
     jwt.verify(token, process.env.AUTH_TOKEN_SECRET, (err, decoded) => {
@@ -52,12 +50,10 @@ const confirmEmail = async (req, res, next) => {
         message: "Email has been successfully verified",
       },
     });
-  } catch (error) {
-    next(error);
-  }
+  } catch (error) {}
 };
 
-const login = async (req, res, next) => {
+const login = async (req, res) => {
   try {
     const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
     if (user[0].role == "admin") {
@@ -102,11 +98,10 @@ const login = async (req, res, next) => {
     return res.json({ accessToken });
   } catch (error) {
     res.status(404).json({ payload: { message: "Email is not found" } });
-    next(error);
   }
 };
 
-const logout = async (req, res, next) => {
+const logout = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
@@ -116,9 +111,7 @@ const logout = async (req, res, next) => {
     await db.query(`UPDATE users SET refresh_token = null WHERE id = '${userId}';`);
     res.clearCookie("refreshToken");
     return res.status(200).json({ payload: { message: "You have successfully logged out" } });
-  } catch (error) {
-    return next(error);
-  }
+  } catch (error) {}
 };
 
 module.exports = { register, login, logout, confirmEmail };

@@ -15,7 +15,7 @@ const PORT = process.env.PORT;
 executeTable();
 
 //Middleware
-app.use(cors());
+app.use(cors({ credentials: true, origin: process.env.CORS }));
 app.use(cookieParser());
 app.use(express.json()).use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

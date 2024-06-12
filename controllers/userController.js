@@ -5,7 +5,7 @@ const getUser = async (req, res, next) => {
   try {
     const userId = req.userId;
     if (!userId) return res.sendStatus(403);
-    const [results] = await db.query(`SELECT users.fullname, users.username, avatars.avatar_url, users.balance FROM users LEFT JOIN avatars ON users.id = avatars.user_id WHERE users.id = '${userId}';`);
+    const [results] = await db.query(`SELECT users.fullname, users.username, users.email, users.phone_number, avatars.avatar_url, users.balance FROM users LEFT JOIN avatars ON users.id = avatars.user_id WHERE users.id = '${userId}';`);
     res.status(200).json({
       payload: {
         message: "User data has been successfully fetched",
@@ -21,8 +21,8 @@ const editUser = async (req, res, next) => {
   try {
     const userId = req.userId;
     if (!userId) return res.sendStatus(403);
-    const { username, age, country } = req.body;
-    await db.query(`UPDATE users SET username = '${username}', age = '${age}', country = '${country}', updated_at = CURRENT_TIMESTAMP() WHERE id = '${userId}';`);
+    const { fullname, email, phoneNumber, age, country } = req.body;
+    await db.query(`UPDATE users SET fullname = '${fullname}', email = '${email}', phone_number = '${phoneNumber}', age = '${age}', country = '${country}', updated_at = CURRENT_TIMESTAMP() WHERE id = '${userId}';`);
     res.status(200).json({ message: "Your profile has been updated" });
   } catch (error) {
     next(error);

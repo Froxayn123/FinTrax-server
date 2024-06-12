@@ -8,8 +8,8 @@ const categoryTable = async () => {
         name ENUM("Food & Beverages", "Education", "Transportation", "Housing", "Healthcare", "Entertainment", "Fashion", "Makeup", "Skincare", "Bodycare", "Travel & Holidays", "Technology", "Debt Payment", "Donate", "Investment", "Miscellaneous Expense") UNIQUE NOT NULL,
         filename VARCHAR(255) NULL,
         category_url VARCHAR(255) NULL,
-        created_at TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP NOT NULL
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
       );`);
     }
   } catch (err) {

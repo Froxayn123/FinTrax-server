@@ -11,7 +11,7 @@ const register = async (req, res, next) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    console.log("Received Data:", req.body); // Log data yang diterima
+    console.log("Received Data:", req.body);
 
     if (password !== confPassword) {
       return res.status(400).json({ message: "Password and Confirm Password don't match" });
@@ -74,63 +74,29 @@ const confirmEmail = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-
-    // Debugging: Log received email and password
-    console.log("Received Email:", email);
-    console.log("Received Password:", password);
-
-    // Query the database for the user by email
-    const [user] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
-
-    // Debugging: Log the retrieved user data
-    console.log("Retrieved User Data:", user);
-
-    // Check if user exists
-    if (!user || user.length === 0) {
-      console.log("User not found for email:", email);
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const storedPasswordHash = user[0].password;
-
-    // Debugging: Log stored password hash
-    console.log("Stored Password Hash:", storedPasswordHash);
-
-    // Compare the provided password with the stored hash
-    const match = await bcrypt.compare(password, storedPasswordHash);
-
-    // Debugging: Log password comparison result
-    console.log("Password Match:", match);
-
-    if (!match) {
-      return res.status(400).json({ message: "Wrong Password" });
-    }
-
+    const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
+    console.log(user);
+    const match = await bcrypt.compare(req.body.password, user[0].password);
+    if (!match) return res.status(400).json({ message: "Wrong Password" });
     const userId = user[0].id;
     const fullname = user[0].fullname;
     const username = user[0].username;
+    const email = user[0].email;
+    const accessToken = jwt.sign({ userId, fullname, username, email }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "1h",
+    });
+    const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "1d",
+    });
+    await db.query(`UPDATE users SET refresh_token = '${refreshToken}' WHERE id = '${userId}'`);
 
-    // Generate JWT tokens
-    const accessToken = jwt.sign({ userId, fullname, username, email: user[0].email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
-
-    const refreshToken = jwt.sign({ userId, fullname, username, email: user[0].email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "1d" });
-
-    // Update the user's refresh token in the database
-    await db.query(`UPDATE users SET refresh_token = ? WHERE id = ?`, [refreshToken, userId]);
-
-    // Set the refresh token in the cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-
-    // Send the access token to the client
     res.json({ accessToken });
   } catch (error) {
-    // Log any errors
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(404).json({ payload: { message: "Email is not found" } });
     next(error);
   }
 };

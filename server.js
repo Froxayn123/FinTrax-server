@@ -1,5 +1,5 @@
 //Initialize
-require("dotenv").config();
+require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const express = require("express");
 const app = express();
 
@@ -14,12 +14,12 @@ const PORT = process.env.PORT;
 executeTable();
 
 //Middleware
-app.use(handlingError);
-app.use(logger);
 app.use(cors({ credentials: true, origin: process.env.CORS }));
 app.use(cookieParser());
 app.use(express.json()).use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(logger);
+app.use(handlingError);
 
 //Router
 app.use(routerAPI);

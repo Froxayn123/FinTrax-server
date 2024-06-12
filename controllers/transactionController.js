@@ -1,5 +1,5 @@
 const db = require("../configs/connect");
-const { addition, subtraction } = require("../middlewares/calculator");
+const { addition } = require("../middlewares/calculator");
 
 const getAllTransactions = async (req, res, next) => {
   try {

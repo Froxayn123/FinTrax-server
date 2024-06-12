@@ -44,7 +44,7 @@ const confirmEmail = async (req, res, next) => {
     const [checkuser] = await db.query(`SELECT * FROM users WHERE email = '${email}';`);
     if (checkuser.length !== 0) return res.status(400).json({ message: "Email is already verified" });
     await db.query(
-      `INSERT INTO users(id, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
+      `INSERT INTO users(id, role, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), 'user', '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
     );
 
     return res.status(200).json({
@@ -60,6 +60,27 @@ const confirmEmail = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
+    if (user[0].role == "admin") {
+      const match = (await user[0].password) == req.body.password;
+      if (!match) return res.status(400).json({ message: "Wrong Password" });
+      const userId = user[0].id;
+      const fullname = user[0].fullname;
+      const username = user[0].username;
+      const email = user[0].email;
+      const accessToken = jwt.sign({ userId, fullname, username, email }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
+      const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: "1d",
+      });
+      await db.query(`UPDATE users SET refresh_token = '${refreshToken}' WHERE id = '${userId}'`);
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      return res.json({ accessToken });
+    }
     const match = await bcrypt.compare(req.body.password, user[0].password);
     if (!match) return res.status(400).json({ message: "Wrong Password" });
     const userId = user[0].id;
@@ -78,7 +99,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ accessToken });
+    return res.json({ accessToken });
   } catch (error) {
     res.status(404).json({ payload: { message: "Email is not found" } });
     next(error);

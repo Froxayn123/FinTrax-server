@@ -5,6 +5,7 @@ const usersTable = async () => {
     if (checkTable.length === 0) {
       await db.query(`CREATE TABLE users(
         id VARCHAR(255) PRIMARY KEY UNIQUE NOT NULL,
+        role ENUM("user", "admin") NOT NULL,
         fullname CHAR(100) NOT NULL,
         username VARCHAR(100) NOT NULL,
         phone_number VARCHAR(100) NOT NULL,

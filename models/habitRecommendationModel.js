@@ -9,8 +9,8 @@ const habitRecTable = async () => {
         savings_percentage INT(100) NOT NULL,
         wants_percentage INT(100) NOT NULL,
         needs_percentage INT(100) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL);`);
+        created_at TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP NOT NULL);`);
     }
   } catch (err) {
     console.log(err);

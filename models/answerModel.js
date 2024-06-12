@@ -8,8 +8,8 @@ const answersTable = async () => {
         quiz_question VARCHAR(255) NOT NULL,
         answer VARCHAR(255) NOT NULL,
         value INT(100) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        created_at TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP NOT NULL,
         FOREIGN KEY(quiz_question) REFERENCES quizzes(question) ON DELETE CASCADE
       );`);
     }

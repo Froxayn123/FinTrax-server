@@ -16,9 +16,9 @@ const usersTable = async () => {
         country CHAR(50),
         refresh_token TEXT,
         email_verified_at TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`);
+        created_at TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP);`);
     }
   } catch (err) {
     console.log(err);

@@ -7,4 +7,4 @@ const handlingError = (err, req, res, next) => {
   next();
 };
 
-module.exports = handlingError;
+module.exports = { handlingError };

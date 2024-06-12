@@ -19,10 +19,11 @@ app.use(cookieParser());
 app.use(express.json()).use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(logger);
-app.use(handlingError);
 
 //Router
 app.use(routerAPI);
+
+app.use(handlingError);
 
 app.listen(PORT, () => {
   console.log(`App is listening to http://localhost:${PORT}`);

@@ -4,7 +4,7 @@ const { refreshToken } = require("../controllers/refreshToken");
 const { handlingError } = require("../middlewares/handlingError");
 const router = express();
 
-router.post("/register", register, handlingError);
+router.post("/register", handlingError, register);
 router.post("/login", login);
 router.get("/token", refreshToken);
 router.delete("/logout", logout);

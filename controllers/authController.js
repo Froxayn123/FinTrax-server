@@ -68,7 +68,7 @@ const login = async (req, res, next) => {
       const username = user[0].username;
       const email = user[0].email;
       const accessToken = jwt.sign({ userId, fullname, username, email }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "20s",
       });
       const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: "1d",
@@ -88,7 +88,7 @@ const login = async (req, res, next) => {
     const username = user[0].username;
     const email = user[0].email;
     const accessToken = jwt.sign({ userId, fullname, username, email }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "20s",
     });
     const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",

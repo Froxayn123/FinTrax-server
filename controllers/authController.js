@@ -10,9 +10,9 @@ const register = async (req, res, next) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     const authToken = jwt.sign({ fullname, username, phoneNumber, email, hashPassword }, process.env.AUTH_TOKEN_SECRET, {
-      expiresIn: "2m",
+      expiresIn: "30m",
     });
-    const link = `${process.env.BASE_URL}/register/confirm/${authToken}`;
+    const link = `${process.env.CORS}/verification?emailToken=${authToken}`;
     await sendEmail(email, "Verify Your Email Address for FinTrax", link, fullname);
     res.status(201).json({
       payload: {
@@ -34,22 +34,38 @@ const confirmEmail = async (req, res, next) => {
       req.phoneNumber = decoded.phoneNumber;
       req.email = decoded.email;
       req.hashPassword = decoded.hashPassword;
+      req.decoded = decoded;
     });
-
     const fullname = req.fullname;
     const username = req.username;
     const phoneNumber = req.phoneNumber;
     const email = req.email;
     const hashPassword = req.hashPassword;
+
+    if (fullname == undefined) return res.status(410).json({ payload: { message: "Verification link has been expired" } });
+
     const [checkuser] = await db.query(`SELECT * FROM users WHERE email = '${email}';`);
-    if (checkuser.length !== 0) return res.status(400).json({ message: "Email is already verified" });
+    if (checkuser.length !== 0) return res.status(200).json({ payload: { message: "Email is already verified, Redirecting..." } });
     await db.query(
-      `INSERT INTO users(id, role, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES (UUID(), 'user', '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
+      `INSERT INTO users(id, role, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES(UUID(), 'user', '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
     );
+
+    const [user] = await db.query(`SELECT * FROM users WHERE email = '${email}';`);
+    const userId = user[0].id;
+    const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "1d",
+    });
+
+    await db.query(`UPDATE users SET refresh_token = '${refreshToken}' WHERE id = '${userId}'`);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).json({
       payload: {
-        message: "Email has been successfully verified",
+        message: "Email has been successfully verified, Redirecting...",
       },
     });
   } catch (error) {
@@ -62,7 +78,7 @@ const login = async (req, res, next) => {
     const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
     if (user[0].role == "admin") {
       const match = (await user[0].password) == req.body.password;
-      if (!match) return res.status(400).json({ message: "Wrong Password" });
+      if (!match) return res.status(400).json({ payload: { message: "Wrong Password" } });
       const userId = user[0].id;
       const fullname = user[0].fullname;
       const username = user[0].username;
@@ -82,7 +98,7 @@ const login = async (req, res, next) => {
       return res.json({ accessToken });
     }
     const match = await bcrypt.compare(req.body.password, user[0].password);
-    if (!match) return res.status(400).json({ message: "Wrong Password" });
+    if (!match) return res.status(400).json({ payload: { message: "Wrong Password" } });
     const userId = user[0].id;
     const fullname = user[0].fullname;
     const username = user[0].username;
@@ -101,7 +117,7 @@ const login = async (req, res, next) => {
     });
     return res.json({ accessToken });
   } catch (error) {
-    res.status(404).json({ payload: { message: "Email is not found" } });
+    res.status(404).json({ payload: { message: "Your account is not registered" } });
     next(error);
   }
 };

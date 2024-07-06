@@ -50,7 +50,7 @@ const confirmEmail = async (req, res, next) => {
     );
 
     const [user] = await db.query(
-      `SELECT users.id, users.fullname, users.username, avatars.avatar_url, users.balance, user_habits.habit_name, habit_recommendations.savings_percentage, habit_recommendations.wants_percentage, habit_recommendations.needs_percentage FROM users LEFT JOIN avatars ON users.id = avatars.user_id LEFT JOIN user_habits ON users.id = user_habits.user_id LEFT JOIN habit_recommendations ON user_habits.habit_name = habit_recommendations.name WHERE users.email = '${email}`
+      `SELECT users.id, users.fullname, users.username, avatars.avatar_url, users.balance, user_habits.habit_name, habit_recommendations.savings_percentage, habit_recommendations.wants_percentage, habit_recommendations.needs_percentage FROM users LEFT JOIN avatars ON users.id = avatars.user_id LEFT JOIN user_habits ON users.id = user_habits.user_id LEFT JOIN habit_recommendations ON user_habits.habit_name = habit_recommendations.name WHERE users.email = '${email}';`
     );
 
     const userId = user[0].id;

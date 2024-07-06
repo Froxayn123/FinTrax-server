@@ -23,11 +23,11 @@ const answerData = async () => {
     const [checkData] = await db.query("SELECT * FROM answers");
     if (checkData.length === 0) {
       const answers = [
-        { quizQuestion: "What is your age group?", answer: "Student", value: 1 },
-        { quizQuestion: "What is your age group?", answer: "Employed", value: 2 },
-        { quizQuestion: "What is your age group?", answer: "Self-employed", value: 3 },
-        { quizQuestion: "What is your age group?", answer: "Unemployed", value: 1 },
-        { quizQuestion: "What is your age group?", answer: "Retired", value: 3 },
+        { quizQuestion: "What is your employment status?", answer: "Student", value: 1 },
+        { quizQuestion: "What is your employment status?", answer: "Employed", value: 2 },
+        { quizQuestion: "What is your employment status?", answer: "Self-employed", value: 3 },
+        { quizQuestion: "What is your employment status?", answer: "Unemployed", value: 1 },
+        { quizQuestion: "What is your employment status?", answer: "Retired", value: 3 },
         { quizQuestion: "What are your main financial goals?", answer: "Saving for a specific purchase (e.g. House, Car)", value: 2 },
         { quizQuestion: "What are your main financial goals?", answer: "Building an emergency fund", value: 3 },
         { quizQuestion: "What are your main financial goals?", answer: "Education", value: 1 },

@@ -10,6 +10,12 @@ const verifyToken = (req, res, next) => {
     req.fullname = decoded.fullname;
     req.username = decoded.username;
     req.email = decoded.email;
+    req.avatarUrl = decoded.avatarUrl;
+    req.balance = decoded.balance;
+    req.habitName = decoded.habitName;
+    req.savingsPercentage = decoded.savingsPercentage;
+    req.wantsPercentage = decoded.wantsPercentage;
+    req.needsPercentage = decoded.needsPercentage;
     next();
   });
 };

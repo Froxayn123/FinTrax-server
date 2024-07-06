@@ -34,7 +34,6 @@ const confirmEmail = async (req, res, next) => {
       req.phoneNumber = decoded.phoneNumber;
       req.email = decoded.email;
       req.hashPassword = decoded.hashPassword;
-      req.decoded = decoded;
     });
     const fullname = req.fullname;
     const username = req.username;
@@ -50,9 +49,19 @@ const confirmEmail = async (req, res, next) => {
       `INSERT INTO users(id, role, fullname, email, password, phone_number, username, refresh_token, email_verified_at, created_at, updated_at) VALUES(UUID(), 'user', '${fullname}', '${email}', '${hashPassword}', '${phoneNumber}', '${username}', '${token}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
     );
 
-    const [user] = await db.query(`SELECT * FROM users WHERE email = '${email}';`);
+    const [user] = await db.query(
+      `SELECT users.id, users.fullname, users.username, avatars.avatar_url, users.balance, user_habits.habit_name, habit_recommendations.savings_percentage, habit_recommendations.wants_percentage, habit_recommendations.needs_percentage FROM users LEFT JOIN avatars ON users.id = avatars.user_id LEFT JOIN user_habits ON users.id = user_habits.user_id LEFT JOIN habit_recommendations ON user_habits.habit_name = habit_recommendations.name WHERE users.email = '${email}`
+    );
+
     const userId = user[0].id;
-    const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
+    const avatarUrl = user[0].avatar_url;
+    const balance = user[0].balance;
+    const habitName = user[0].habit_name;
+    const savingsPercentage = user[0].savings_percentage;
+    const wantsPercentage = user[0].wants_percentage;
+    const needsPercentage = user[0].needs_percentage;
+
+    const refreshToken = jwt.sign({ userId, fullname, username, email, avatarUrl, balance, habitName, savingsPercentage, wantsPercentage, needsPercentage }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",
     });
 
@@ -75,7 +84,9 @@ const confirmEmail = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const [user] = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}';`);
+    const [user] = await db.query(
+      `SELECT users.id, users.fullname, users.username, users.email, users.password, avatars.avatar_url, users.balance, user_habits.habit_name, habit_recommendations.savings_percentage, habit_recommendations.wants_percentage, habit_recommendations.needs_percentage FROM users LEFT JOIN avatars ON users.id = avatars.user_id LEFT JOIN user_habits ON users.id = user_habits.user_id LEFT JOIN habit_recommendations ON user_habits.habit_name = habit_recommendations.name WHERE users.email = '${req.body.email}';`
+    );
     if (user[0].role == "admin") {
       const match = (await user[0].password) == req.body.password;
       if (!match) return res.status(400).json({ payload: { message: "Wrong Password" } });
@@ -103,10 +114,17 @@ const login = async (req, res, next) => {
     const fullname = user[0].fullname;
     const username = user[0].username;
     const email = user[0].email;
-    const accessToken = jwt.sign({ userId, fullname, username, email }, process.env.ACCESS_TOKEN_SECRET, {
+    const avatarUrl = user[0].avatar_url;
+    const balance = user[0].balance;
+    const habitName = user[0].habit_name;
+    const savingsPercentage = user[0].savings_percentage;
+    const wantsPercentage = user[0].wants_percentage;
+    const needsPercentage = user[0].needs_percentage;
+
+    const accessToken = jwt.sign({ userId, fullname, username, email, avatarUrl, balance, habitName, savingsPercentage, wantsPercentage, needsPercentage }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "20s",
     });
-    const refreshToken = jwt.sign({ userId, fullname, username, email }, process.env.REFRESH_TOKEN_SECRET, {
+    const refreshToken = jwt.sign({ userId, fullname, username, email, avatarUrl, balance, habitName, savingsPercentage, wantsPercentage, needsPercentage }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",
     });
     await db.query(`UPDATE users SET refresh_token = '${refreshToken}' WHERE id = '${userId}'`);

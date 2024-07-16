@@ -11,7 +11,7 @@ const usersTable = async () => {
         phone_number VARCHAR(100) NOT NULL,
         email VARCHAR(100) NOT NULL,
         password VARCHAR(100) NOT NULL,
-        balance DECIMAL(15,2),
+        balance DECIMAL(30,2),
         age ENUM("Under 18", "18-24", "25-34", "35-44", "45-54", "55-64", "65 above"),
         country CHAR(50),
         refresh_token TEXT,

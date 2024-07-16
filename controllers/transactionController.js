@@ -25,7 +25,7 @@ const addTransaction = async (req, res, next) => {
     if (type !== "income" && type !== "expenses") return res.status(404).json({ message: "Type is not found" });
     if (checkCategory.length == 0) return res.status(404).json({ message: "Category is not found" });
     await db.query(
-      `INSERT INTO transactions(id, user_id, category_name, type, amount, detail, created_at, updated_at) VALUES(UUID(), '${userId}', '${categoryName}', '${type}', ${amount}, '${detail}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
+      `INSERT INTO transactions(id, user_id, category_name, type, amount, detail, icon, created_at, updated_at) VALUES(UUID(), '${userId}', '${categoryName}', '${type}', ${amount}, '${detail}', '/assets/${categoryName}.png', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());`
     );
 
     if (type == "income") {
